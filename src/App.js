@@ -28,7 +28,7 @@ function App() {
   useInitCanvas(shapeVertices);
 
   const handleColor = (activeVertex, value) => {
-    setShapeVertices();
+    setShapeVertices((a) => [...a]);
   };
 
   return (
