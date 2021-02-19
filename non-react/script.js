@@ -6,8 +6,10 @@ var gl;
 var maxNumVertices = 20000;
 var index = 0;
 var x,y;
+var sindex = 0;
 var cindex = 0;
-var t = [];
+var lineColors= [];
+var squareColors = [];
 var colors = [
 
   [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0], // black
@@ -18,7 +20,8 @@ var colors = [
   [1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0], // magenta
   [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0] // cyan
 ];
-var points =[];
+var linePoints =[];
+var squarePoints = [];
 var mouseClicked;
 
 canvas = document.getElementById("gl-canvas");
@@ -33,6 +36,11 @@ window.onload = function init() {
     alert("WebGL isn't available");
   }
 
+  var shape = document.getElementById("menushape");
+
+  shape.addEventListener("click",function(){
+    sindex = shape.selectedIndex;
+  })
   var m = document.getElementById("mymenu");
 
   m.addEventListener("click", function() {
@@ -41,27 +49,82 @@ window.onload = function init() {
 
   var c = document.getElementById("clearButton")
   c.addEventListener("click", function(){
-    points= [];
-    t = [];
+    linePoints= [];
+    lineColors = [];
+    squarePoints = [];
+    squareColors= [];
     render(); 
   });
 
   canvas.addEventListener("mousedown", function(event){
-    if(!mouseClicked){
+    if (sindex == 0){
+      if(!mouseClicked){
+        x = 2 * event.clientX / canvas.width - 1
+        y = 2 * (canvas.height - event.clientY) / canvas.height - 1;
+        mouseClicked = true;
+        
+      } else {
+        linePoints.push(x);
+        linePoints.push(y);
+        linePoints.push(2 * event.clientX / canvas.width - 1);
+        linePoints.push(2 * (canvas.height - event.clientY) / canvas.height - 1);
+        lineColors.push(colors[cindex]);
+        mouseClicked = false;
+        render();
+          
+      }
+    } else if (sindex == 1){
+      mouseClicked = false;
+      var width = 0.2;
       
       x = 2 * event.clientX / canvas.width - 1
       y = 2 * (canvas.height - event.clientY) / canvas.height - 1;
-      mouseClicked = true;
+      squarePoints.push(x);
+      squarePoints.push(y);
+
+      squarePoints.push(x + width);
+      squarePoints.push(y);
+
+      squarePoints.push(x + width) ;
+      squarePoints.push(y - width);
+
+      squarePoints.push(x);
+      squarePoints.push(y - width);
+
+      squarePoints.push(x);
+      squarePoints.push(y);
+
+      squarePoints.push(x + width);
+      squarePoints.push(y);
+
+      squarePoints.push(x);
+      squarePoints.push(y);
+
+      squarePoints.push(x + width);
+      squarePoints.push(y);
+
+      squarePoints.push(x + width) ;
+      squarePoints.push(y - width);
+
+      squarePoints.push(x);
+      squarePoints.push(y - width);
+
+      squarePoints.push(x);
+      squarePoints.push(y);
+
+      squarePoints.push(x + width);
+      squarePoints.push(y);
+
       
-    } else {
-      points.push(x);
-      points.push(y);
-      points.push(2 * event.clientX / canvas.width - 1);
-      points.push(2 * (canvas.height - event.clientY) / canvas.height - 1);
-      t.push(colors[cindex]);
-      mouseClicked = false;
+
+      squareColors.push(colors[cindex]);
+      squareColors.push(colors[cindex]);
+      squareColors.push(colors[cindex]);
+      squareColors.push(colors[cindex]);
+      squareColors.push(colors[cindex]);
+      squareColors.push(colors[cindex]);
+
       render();
-        
     }
     
   });
@@ -98,13 +161,24 @@ function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(linePoints));
   
   gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(t));
-  if (points.length != 0){
-    for (var i = 0; i <= points.length/2; i++) {
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(lineColors));
+  if (linePoints.length != 0){
+    for (var i = 0; i <= linePoints.length/2; i++) {
       gl.drawArrays(gl.LINES, 2*i,2);
+    }
+  }
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(squarePoints));
+  
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(squareColors));
+  if (squarePoints.length != 0){
+    for (var i = 0; i <= squarePoints.length/4; i++) {
+      gl.drawArrays(gl.TRIANGLES, 4*i,4);
     }
   }
 
