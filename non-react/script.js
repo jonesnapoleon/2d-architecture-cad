@@ -76,7 +76,11 @@ window.onload = function init() {
     } else if (sindex == 1){
       mouseClicked = false;
       var width = 0.2;
-      
+      var val = parseFloat(document.getElementById("squarewidth").value);
+      if (val != "0"){
+        width = val;
+      }
+      console.log(width);
       x = 2 * event.clientX / canvas.width - 1
       y = 2 * (canvas.height - event.clientY) / canvas.height - 1;
       squarePoints.push(x);
