@@ -61,9 +61,9 @@ window.onload = function init() {
       if(!mouseClicked){
         x = 2 * event.clientX / canvas.width - 1
         y = 2 * (canvas.height - event.clientY) / canvas.height - 1;
-        mouseClicked = true;
-        
-      } else {
+            mouseClicked = true;
+            
+          } else {
         linePoints.push(x);
         linePoints.push(y);
         linePoints.push(2 * event.clientX / canvas.width - 1);
@@ -95,38 +95,11 @@ window.onload = function init() {
       squarePoints.push(x);
       squarePoints.push(y - width);
 
-      squarePoints.push(x);
-      squarePoints.push(y);
-
-      squarePoints.push(x + width);
-      squarePoints.push(y);
-
-      squarePoints.push(x);
-      squarePoints.push(y);
-
-      squarePoints.push(x + width);
-      squarePoints.push(y);
-
-      squarePoints.push(x + width) ;
-      squarePoints.push(y - width);
-
-      squarePoints.push(x);
-      squarePoints.push(y - width);
-
-      squarePoints.push(x);
-      squarePoints.push(y);
-
-      squarePoints.push(x + width);
-      squarePoints.push(y);
-
       
 
       squareColors.push(colors[cindex]);
       squareColors.push(colors[cindex]);
-      squareColors.push(colors[cindex]);
-      squareColors.push(colors[cindex]);
-      squareColors.push(colors[cindex]);
-      squareColors.push(colors[cindex]);
+      
 
       render();
     }
@@ -182,7 +155,7 @@ function render() {
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(squareColors));
   if (squarePoints.length != 0){
     for (var i = 0; i <= squarePoints.length/4; i++) {
-      gl.drawArrays(gl.TRIANGLES, 4*i,4);
+      gl.drawArrays(gl.LINE_LOOP, 4*i,4);
     }
   }
 
