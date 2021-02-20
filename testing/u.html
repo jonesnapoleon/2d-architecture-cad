@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+      attribute vec4 vPosition;
+      void main()
+      {
+      		<!-- REQUIRED IN VERTEX SHADER -->
+      		<!-- Basically a pass-through function -->
+          gl_Position = vPosition;
+      }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+
+      void main()
+      {
+      		<!-- REQUIRED IN FRAGMENT SHADER -->
+      		<!-- Basically a pass-through function -->
+      		<!-- Sets the color of the object to white -->
+          gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 );
+      }
+    </script>
+
+    <!-- Standard utilities for setting up WebGL -->
+    <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+
+    <!-- Contains code for reading, compiling, and linking shaders -->
+    <script type="text/javascript" src="../Common/initShaders.js"></script>
+
+    <!-- Matrix vector package -->
+    <script type="text/javascript" src="../Common/MV.js"></script>
+
+    <!-- Our application file -->
+    <script type="text/javascript" src="tes.js"></script>
+  </head>
+  <body>
+    <!-- Canvas is required for rendering the graphics -->
+    <canvas id="gl-canvas" width="512" height="512">
+      Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+  </body>
+</html>

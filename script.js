@@ -27,10 +27,18 @@ canvas = document.getElementById("gl-canvas");
 gl = WebGLUtils.setupWebGL(canvas);
 var bufferId = gl.createBuffer();
 var cBufferId = gl.createBuffer();
+
+const resizeCanvas = (gl) => {
+  gl.canvas.width = (10 / 12) * window.innerWidth;
+  gl.canvas.height = (7 / 9) * window.innerHeight;
+};
+
 window.onload = function init() {
   if (!gl) {
     alert("WebGL isn't available");
   }
+  resizeCanvas(gl);
+  window.addEventListener("resize", () => resizeCanvas(gl), false);
 
   var shape = document.getElementById("menushape");
 
@@ -143,7 +151,6 @@ window.onload = function init() {
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
-
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(linePoints));
 
@@ -166,3 +173,18 @@ function render() {
     }
   }
 }
+
+// window.onload = () => {
+//   const canvas = document.getElementById("gl-canvas");
+//   const gl = canvas.getContext("webgl");
+//   if (!gl) return;
+
+//   const resizeCanvas = () => {
+//     gl.canvas.width = (10 / 12) * window.innerWidth;
+//     gl.canvas.height = (9 / 9) * window.innerHeight;
+//   };
+
+//   redraw(gl);
+//   resizeCanvas();
+//   window.addEventListener("resize", resizeCanvas, false);
+// };
