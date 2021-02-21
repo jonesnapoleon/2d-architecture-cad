@@ -75,15 +75,13 @@ const checkPointExist = (x = x, y = y) => {
       }
     }
   }
-  for (let i = 0; i < polygonPoints.length; i += 8) {
-    for (let j = i; j < i + 8; j += 2) {
-      const oneX = polygonPoints[j];
-      const oneY = polygonPoints[j + 1];
-      if (isCoordinateChoosen(oneX, oneY, x, y)) {
-        movePointDetected = true;
-        tempMove = [x, y];
-        tempIndex = [j, j + 1, "S"];
-      }
+  for (let i = 0; i < polygonPoints.length; i += 2) {
+    const oneX = polygonPoints[i];
+    const oneY = polygonPoints[i + 1];
+    if (isCoordinateChoosen(oneX, oneY, x, y)) {
+      movePointDetected = true;
+      tempMove = [x, y];
+      tempIndex = [i, i + 1, "P"];
     }
   }
 };
@@ -116,6 +114,23 @@ const saveProgress = () => {
   downloadToFile(JSON.stringify(data));
 };
 
+const loadProgress = (e) => {
+  const file = e.target.files[0];
+  var reader = new FileReader();
+  reader.addEventListener("load", function (e) {
+    let data = e.target.result;
+    data = JSON.parse(data);
+    lineColors = data.lineColors;
+    squareColors = data.squareColors;
+    linePoints = data.linePoints;
+    squarePoints = data.squarePoints;
+    polygonPoints = data.polygonPoints;
+    polygonColors = data.polygonColors;
+    render();
+  });
+  reader.readAsBinaryString(file);
+};
+
 window.onload = function init() {
   if (!gl) alert("WebGL isn't available");
   resizeCanvas(gl);
@@ -127,14 +142,13 @@ window.onload = function init() {
   });
 
   var m = document.getElementById("color-picker");
-  m.addEventListener("change", function (e) {
-    getColor(e.target.value);
-  });
+  m.addEventListener("change", (e) => getColor(e.target.value));
 
   let saveButton = document.getElementById("save");
-  saveButton.addEventListener("click", (e) => {
-    saveProgress();
-  });
+  saveButton.addEventListener("click", saveProgress);
+
+  let loadButton = document.getElementById("load");
+  loadButton.addEventListener("change", loadProgress);
 
   let isMoveCheckbox = document.getElementById("isMove");
   isMoveCheckbox.addEventListener("change", (e) => {
