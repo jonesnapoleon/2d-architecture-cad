@@ -134,7 +134,7 @@ window.onload = function init() {
       render();
     } else if (sindex == 3) {
       //Making Polygon
-      var numPolygon = parseFloat(document.getElementById("numPolygon").value);
+      var numPolygon = parseFloat(document.getElementById("nodePolygon").value);
       var width = 0.2;
       var val = parseFloat(document.getElementById("width").value);
       if (val != "0") {
@@ -148,22 +148,22 @@ window.onload = function init() {
         console.log(width);
         x = (2 * event.clientX) / canvas.width - 1;
         y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
-        linePoints.push(x);
-        linePoints.push(y);
+        polygonPoints.push(x);
+        polygonPoints.push(y);
 
-        linePoints.push(x - width);
-        linePoints.push(y + width);
+        polygonPoints.push(x - width);
+        polygonPoints.push(y + width);
 
-        linePoints.push(x + width);
-        linePoints.push(y + 2 * width);
+        polygonPoints.push(x + width);
+        polygonPoints.push(y + 2 * width);
 
-        linePoints.push(x + 3 * width);
-        linePoints.push(y + width);
+        polygonPoints.push(x + 3 * width);
+        polygonPoints.push(y + width);
 
-        linePoints.push(x + 2 * width);
-        linePoints.push(y);
+        polygonPoints.push(x + 2 * width);
+        polygonPoints.push(y);
 
-        lineColors.push(colors[cindex]);
+        polygonColors.push(colors[cindex]);
         render();
       }
     }
@@ -192,7 +192,7 @@ window.onload = function init() {
   gl.enableVertexAttribArray(vColor);
 };
 
-function render(num) {
+function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(linePoints));
@@ -216,16 +216,16 @@ function render(num) {
     }
   }
 
-  // gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-  // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(linePoints));
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(polygonPoints));
 
-  // gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
-  // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(lineColors));
-  // if (linePoints.length != 0) {
-  //   for (var i = 0; i <= linePoints.length / 5; i++) {
-  //     gl.drawArrays(gl.POLYGON, 5 * i, 5);
-  //   }
-  // }
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(polygonColors));
+  if (polygonPoints.length != 0) {
+    for (var i = 0; i <= polygonPoints.length / 5; i++) {
+      gl.drawArrays(gl.POLYGON, 5 * i, 5);
+    }
+  }
 }
 
 // window.onload = () => {
