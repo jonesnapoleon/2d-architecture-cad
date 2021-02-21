@@ -2,12 +2,10 @@
 
 var canvas;
 var gl;
+const maxNumVertices = 20000;
 
-var maxNumVertices = 20000;
-var index = 0;
 var x, y;
-var sindex = 0;
-var cindex = 0;
+var shapeIndex = 0;
 var lineColors = [];
 var squareColors = [];
 var color = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]; // black is default
@@ -41,16 +39,19 @@ const getColor = (hex) => {
   console.log(color);
 };
 
+const getPosition = (event) => {
+  x = (2 * event.clientX) / canvas.width - 1;
+  y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
+};
+
 window.onload = function init() {
-  if (!gl) {
-    alert("WebGL isn't available");
-  }
+  if (!gl) alert("WebGL isn't available");
   resizeCanvas(gl);
   window.addEventListener("resize", () => resizeCanvas(gl), false);
 
   var shape = document.getElementById("menushape");
   shape.addEventListener("click", function () {
-    sindex = shape.selectedIndex;
+    shapeIndex = shape.selectedIndex;
   });
 
   var m = document.getElementById("color-picker");
@@ -68,12 +69,11 @@ window.onload = function init() {
   });
 
   canvas.addEventListener("mousedown", function (event) {
-    x = (2 * event.clientX) / canvas.width - 1;
-    y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
-    if (sindex == 0) {
+    if (shapeIndex == 0) {
       mouseClicked = false;
       var width = 0.2;
       var val = parseFloat(document.getElementById("width").value);
+      getPosition(event);
 
       if (val != "0") {
         width = val;
@@ -88,8 +88,9 @@ window.onload = function init() {
       lineColors.push(color);
 
       render();
-    } else if (sindex == 1) {
+    } else if (shapeIndex == 1) {
       if (!mouseClicked) {
+        getPosition(event);
         mouseClicked = true;
       } else {
         linePoints.push(x);
@@ -102,8 +103,9 @@ window.onload = function init() {
         mouseClicked = false;
         render();
       }
-    } else if (sindex == 2) {
+    } else if (shapeIndex == 2) {
       mouseClicked = false;
+      getPosition(event);
       var width = 0.2;
       var val = parseFloat(document.getElementById("width").value);
       if (val != "0") {
