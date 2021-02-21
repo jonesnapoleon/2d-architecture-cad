@@ -87,6 +87,26 @@ export const redraw = (gl, shapeVertices) => {
   createBuffer(gl, program, shapeVertices);
 };
 
+const triangleVertices = [
+  0.0,
+  0.5,
+  1.0,
+  1.0,
+  0.0,
+
+  -0.5,
+  -0.5,
+  1.0,
+  0.0,
+  1.0,
+
+  0.5,
+  -0.5,
+  0.0,
+  1.0,
+  1.0,
+];
+
 // window.onload = () => {
 //   const canvas = document.querySelector("#glCanvas");
 //   const gl = canvas.getContext("webgl");
