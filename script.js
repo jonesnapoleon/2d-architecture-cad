@@ -92,7 +92,29 @@ let tempMove = [];
 let tempIndex = [];
 let moved;
 
-let moveListener = () => {};
+const downloadToFile = (
+  content,
+  filename = "file.json",
+  contentType = "json"
+) => {
+  const a = document.createElement("a");
+  const file = new Blob([content], { type: contentType });
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+const saveProgress = () => {
+  const data = {
+    linePoints,
+    lineColors,
+    squareColors,
+    squarePoints,
+    polygonPoints,
+    polygonColors,
+  };
+  downloadToFile(JSON.stringify(data));
+};
 
 window.onload = function init() {
   if (!gl) alert("WebGL isn't available");
@@ -107,6 +129,11 @@ window.onload = function init() {
   var m = document.getElementById("color-picker");
   m.addEventListener("change", function (e) {
     getColor(e.target.value);
+  });
+
+  let saveButton = document.getElementById("save");
+  saveButton.addEventListener("click", (e) => {
+    saveProgress();
   });
 
   let isMoveCheckbox = document.getElementById("isMove");
