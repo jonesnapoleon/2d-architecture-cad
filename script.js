@@ -11,6 +11,8 @@ var lineColors = [];
 var squareColors = [];
 var linePoints = [];
 var squarePoints = [];
+var polygonPoints = [];
+var polygonColors = [];
 var mouseClicked;
 var isMove = false;
 let movePointDetected = !true;
@@ -62,11 +64,21 @@ const checkPointExist = (x = x, y = y) => {
       }
     }
   }
-
   for (let i = 0; i < squarePoints.length; i += 8) {
     for (let j = i; j < i + 8; j += 2) {
       const oneX = squarePoints[j];
       const oneY = squarePoints[j + 1];
+      if (isCoordinateChoosen(oneX, oneY, x, y)) {
+        movePointDetected = true;
+        tempMove = [x, y];
+        tempIndex = [j, j + 1, "S"];
+      }
+    }
+  }
+  for (let i = 0; i < polygonPoints.length; i += 8) {
+    for (let j = i; j < i + 8; j += 2) {
+      const oneX = polygonPoints[j];
+      const oneY = polygonPoints[j + 1];
       if (isCoordinateChoosen(oneX, oneY, x, y)) {
         movePointDetected = true;
         tempMove = [x, y];
@@ -108,6 +120,8 @@ window.onload = function init() {
     lineColors = [];
     squarePoints = [];
     squareColors = [];
+    polygonPoints = [];
+    polygonColors = [];
     render();
   });
 
@@ -129,6 +143,7 @@ window.onload = function init() {
       let array;
       if (tempIndex[2] === "L") array = linePoints;
       if (tempIndex[2] === "S") array = squarePoints;
+      if (tempIndex[2] === "P") array = polygonPoints;
       array[tempIndex[0]] = x;
       array[tempIndex[1]] = y;
       render();
@@ -187,6 +202,38 @@ window.onload = function init() {
         squareColors.push(color);
 
         render();
+      } else if (shapeIndex == 3) {
+        var numPolygon = parseFloat(
+          document.getElementById("nodePolygon").value
+        );
+        var width = 0.2;
+        var val = parseFloat(document.getElementById("width").value);
+        if (val != "0") width = val;
+
+        //Making default polygon
+        if (numPolygon == 0) {
+          mouseClicked = false;
+
+          x = (2 * event.clientX) / canvas.width - 1;
+          y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
+          polygonPoints.push(x);
+          polygonPoints.push(y);
+
+          polygonPoints.push(x - width);
+          polygonPoints.push(y + width);
+
+          polygonPoints.push(x + width);
+          polygonPoints.push(y + 2 * width);
+
+          polygonPoints.push(x + 3 * width);
+          polygonPoints.push(y + width);
+
+          polygonPoints.push(x + 2 * width);
+          polygonPoints.push(y);
+
+          polygonColors.push(color);
+          render();
+        }
       }
     }
   });
@@ -237,19 +284,15 @@ function render() {
       gl.drawArrays(gl.LINE_LOOP, 4 * i, 4);
     }
   }
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(polygonPoints));
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(polygonColors));
+  if (polygonPoints.length != 0) {
+    for (var i = 0; i <= polygonPoints.length / 5; i++) {
+      gl.drawArrays(gl.POLYGON, 5 * i, 5);
+    }
+  }
 }
-
-// window.onload = () => {
-//   const canvas = document.getElementById("gl-canvas");
-//   const gl = canvas.getContext("webgl");
-//   if (!gl) return;
-
-//   const resizeCanvas = () => {
-//     gl.canvas.width = (10 / 12) * window.innerWidth;
-//     gl.canvas.height = (9 / 9) * window.innerHeight;
-//   };
-
-//   redraw(gl);
-//   resizeCanvas();
-//   window.addEventListener("resize", resizeCanvas, false);
-// };

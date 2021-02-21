@@ -17,6 +17,42 @@ const fsSource = `
   }
 `;
 
+const checkPointExist = (x = x, y = y) => {
+  for (let i = 0; i < linePoints.length; i += 4) {
+    for (let j = i; j < i + 4; j += 2) {
+      const oneX = linePoints[j];
+      const oneY = linePoints[j + 1];
+      if (isCoordinateChoosen(oneX, oneY, x, y)) {
+        movePointDetected = true;
+        tempMove = [x, y];
+        tempIndex = [j, j + 1, "L"];
+      }
+    }
+  }
+  for (let i = 0; i < squarePoints.length; i += 8) {
+    for (let j = i; j < i + 8; j += 2) {
+      const oneX = squarePoints[j];
+      const oneY = squarePoints[j + 1];
+      if (isCoordinateChoosen(oneX, oneY, x, y)) {
+        movePointDetected = true;
+        tempMove = [x, y];
+        tempIndex = [j, j + 1, "S"];
+      }
+    }
+  }
+  for (let i = 0; i < polygonPoints.length; i += 8) {
+    for (let j = i; j < i + 8; j += 2) {
+      const oneX = polygonPoints[j];
+      const oneY = polygonPoints[j + 1];
+      if (isCoordinateChoosen(oneX, oneY, x, y)) {
+        movePointDetected = true;
+        tempMove = [x, y];
+        tempIndex = [j, j + 1, "S"];
+      }
+    }
+  }
+};
+
 export const loadShader = (gl, type, source) => {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
