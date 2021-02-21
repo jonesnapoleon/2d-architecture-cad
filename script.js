@@ -112,7 +112,7 @@ window.onload = function init() {
   });
 
   canvas.addEventListener("mousedown", (event) => {
-``    if (isMove) {
+    if (isMove) {
       moved = false;
       getPosition(event);
       checkPointExist(x, y);
