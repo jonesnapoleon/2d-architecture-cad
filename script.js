@@ -10,15 +10,7 @@ var sindex = 0;
 var cindex = 0;
 var lineColors = [];
 var squareColors = [];
-var colors = [
-  [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0], // black
-  [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0], // red
-  [1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0], // yellow
-  [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0], // green
-  [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0], // blue
-  [1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0], // magenta
-  [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0], // cyan
-];
+var color = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]; // black is default
 var linePoints = [];
 var squarePoints = [];
 var mouseClicked;
@@ -33,6 +25,22 @@ const resizeCanvas = (gl) => {
   gl.canvas.height = (7 / 9) * window.innerHeight;
 };
 
+const getColor = (hex) => {
+  const [_, rgb] = hex.split("#");
+  const red = parseInt(rgb.slice(0, 2), 16);
+  const green = parseInt(rgb.slice(2, 4), 16);
+  const blue = parseInt(rgb.slice(4, 6), 16);
+  const alpha = 1;
+  color = [];
+  for (let _ in [1, 2]) {
+    for (let col of [red, green, blue]) {
+      color.push(col / 255);
+    }
+    color.push(alpha);
+  }
+  console.log(color);
+};
+
 window.onload = function init() {
   if (!gl) {
     alert("WebGL isn't available");
@@ -41,14 +49,13 @@ window.onload = function init() {
   window.addEventListener("resize", () => resizeCanvas(gl), false);
 
   var shape = document.getElementById("menushape");
-
   shape.addEventListener("click", function () {
     sindex = shape.selectedIndex;
   });
-  var m = document.getElementById("mymenu");
 
-  m.addEventListener("click", function () {
-    cindex = m.selectedIndex;
+  var m = document.getElementById("color-picker");
+  m.addEventListener("change", function (e) {
+    getColor(e.target.value);
   });
 
   var c = document.getElementById("clearButton");
@@ -61,6 +68,8 @@ window.onload = function init() {
   });
 
   canvas.addEventListener("mousedown", function (event) {
+    x = (2 * event.clientX) / canvas.width - 1;
+    y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
     if (sindex == 0) {
       mouseClicked = false;
       var width = 0.2;
@@ -70,21 +79,17 @@ window.onload = function init() {
         width = val;
       }
       console.log(width);
-      x = (2 * event.clientX) / canvas.width - 1;
-      y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
       linePoints.push(x);
       linePoints.push(y);
 
       linePoints.push(x + width);
       linePoints.push(y);
 
-      lineColors.push(colors[cindex]);
+      lineColors.push(color);
 
       render();
     } else if (sindex == 1) {
       if (!mouseClicked) {
-        x = (2 * event.clientX) / canvas.width - 1;
-        y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
         mouseClicked = true;
       } else {
         linePoints.push(x);
@@ -93,7 +98,7 @@ window.onload = function init() {
         linePoints.push(
           (2 * (canvas.height - event.clientY)) / canvas.height - 1
         );
-        lineColors.push(colors[cindex]);
+        lineColors.push(color);
         mouseClicked = false;
         render();
       }
@@ -105,8 +110,6 @@ window.onload = function init() {
         width = val;
       }
       console.log(width);
-      x = (2 * event.clientX) / canvas.width - 1;
-      y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
       squarePoints.push(x);
       squarePoints.push(y);
 
@@ -119,8 +122,8 @@ window.onload = function init() {
       squarePoints.push(x);
       squarePoints.push(y - width);
 
-      squareColors.push(colors[cindex]);
-      squareColors.push(colors[cindex]);
+      squareColors.push(color);
+      squareColors.push(color);
 
       render();
     }
