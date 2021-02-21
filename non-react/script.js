@@ -10,6 +10,7 @@ var sindex = 0;
 var cindex = 0;
 var lineColors = [];
 var squareColors = [];
+var polygonColors = [];
 var colors = [
   [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0], // black
   [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0], // red
@@ -21,6 +22,7 @@ var colors = [
 ];
 var linePoints = [];
 var squarePoints = [];
+var polygonPoints = [];
 var mouseClicked;
 
 canvas = document.getElementById("gl-canvas");
@@ -49,6 +51,9 @@ window.onload = function init() {
     lineColors = [];
     squarePoints = [];
     squareColors = [];
+    polygonPoints = [];
+    polygonColors = [];
+
     render();
   });
 
@@ -69,7 +74,6 @@ window.onload = function init() {
 
       linePoints.push(x + width);
       linePoints.push(y);
-
       lineColors.push(colors[cindex]);
 
       render();
@@ -115,6 +119,40 @@ window.onload = function init() {
       squareColors.push(colors[cindex]);
 
       render();
+    } else if (sindex == 3) {
+      //Making Polygon
+      var numPolygon = parseFloat(document.getElementById("numPolygon").value);
+      var width = 0.2;
+      var val = parseFloat(document.getElementById("width").value);
+      if (val != "0") {
+        width = val;
+      }
+
+      //Making default polygon
+      if (numPolygon == 0) {
+        mouseClicked = false;
+
+        console.log(width);
+        x = (2 * event.clientX) / canvas.width - 1;
+        y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
+        linePoints.push(x);
+        linePoints.push(y);
+
+        linePoints.push(x - width);
+        linePoints.push(y + width);
+
+        linePoints.push(x + width);
+        linePoints.push(y + 2 * width);
+
+        linePoints.push(x + 3 * width);
+        linePoints.push(y + width);
+
+        linePoints.push(x + 2 * width);
+        linePoints.push(y);
+
+        lineColors.push(colors[cindex]);
+        render();
+      }
     }
   });
 
@@ -141,7 +179,7 @@ window.onload = function init() {
   gl.enableVertexAttribArray(vColor);
 };
 
-function render() {
+function render(num) {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
@@ -165,4 +203,15 @@ function render() {
       gl.drawArrays(gl.LINE_LOOP, 4 * i, 4);
     }
   }
+
+  // gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+  // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(linePoints));
+
+  // gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+  // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(lineColors));
+  // if (linePoints.length != 0) {
+  //   for (var i = 0; i <= linePoints.length / 5; i++) {
+  //     gl.drawArrays(gl.POLYGON, 5 * i, 5);
+  //   }
+  // }
 }
