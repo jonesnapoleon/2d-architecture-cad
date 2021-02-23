@@ -14,8 +14,10 @@ var squarePoints = [];
 var polygonPoints = [];
 var polygonColors = [];
 var mouseClicked;
-var isMove = false;
+var isMoveX = false;
+var isMoveY = false;
 let movePointDetected = !true;
+var width = 0.5;
 
 canvas = document.getElementById("gl-canvas");
 gl = WebGLUtils.setupWebGL(canvas);
@@ -23,8 +25,8 @@ var bufferId = gl.createBuffer();
 var cBufferId = gl.createBuffer();
 
 const resizeCanvas = (gl) => {
-  gl.canvas.width = (10 / 12) * window.innerWidth;
-  gl.canvas.height = (7 / 9) * window.innerHeight;
+  gl.canvas.width = (9 / 12) * window.innerWidth;
+  gl.canvas.height = (9 / 9) * window.innerHeight;
 };
 
 const getColor = (hex) => {
@@ -42,6 +44,11 @@ const getColor = (hex) => {
   }
 };
 
+const setWidth = (e) => {
+  const temp = parseInt(e.target.value);
+  width = (10 * temp) / 1000 || 0.01;
+};
+
 const getPosition = (event) => {
   x = (2 * event.clientX) / canvas.width - 1;
   y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
@@ -52,36 +59,23 @@ const isCoordinateChoosen = (oneX, oneY, x, y) => {
   return difX + difY < 0.1;
 };
 
+const getIndex = (index) => {
+  if (index === 0) return "L";
+  if (index === 1) return "S";
+  if (index === 2) return "P";
+  return "";
+};
 const checkPointExist = (x = x, y = y) => {
-  for (let i = 0; i < linePoints.length; i += 4) {
-    for (let j = i; j < i + 4; j += 2) {
-      const oneX = linePoints[j];
-      const oneY = linePoints[j + 1];
+  let temp = [linePoints, squarePoints, polygonPoints];
+  for (let index in temp) {
+    for (let i = 0; i < temp[index].length; i += 2) {
+      const oneX = temp[index][i];
+      const oneY = temp[index][i + 1];
       if (isCoordinateChoosen(oneX, oneY, x, y)) {
         movePointDetected = true;
         tempMove = [x, y];
-        tempIndex = [j, j + 1, "L"];
+        tempIndex = [i, i + 1, getIndex(parseInt(index))];
       }
-    }
-  }
-  for (let i = 0; i < squarePoints.length; i += 8) {
-    for (let j = i; j < i + 8; j += 2) {
-      const oneX = squarePoints[j];
-      const oneY = squarePoints[j + 1];
-      if (isCoordinateChoosen(oneX, oneY, x, y)) {
-        movePointDetected = true;
-        tempMove = [x, y];
-        tempIndex = [j, j + 1, "S"];
-      }
-    }
-  }
-  for (let i = 0; i < polygonPoints.length; i += 2) {
-    const oneX = polygonPoints[i];
-    const oneY = polygonPoints[i + 1];
-    if (isCoordinateChoosen(oneX, oneY, x, y)) {
-      movePointDetected = true;
-      tempMove = [x, y];
-      tempIndex = [i, i + 1, "P"];
     }
   }
 };
@@ -141,6 +135,9 @@ window.onload = function init() {
     shapeIndex = e.target.value;
   });
 
+  var widthMark = document.getElementById("width");
+  widthMark.addEventListener("change", (e) => setWidth(e));
+
   var m = document.getElementById("color-picker");
   m.addEventListener("change", (e) => getColor(e.target.value));
 
@@ -150,9 +147,13 @@ window.onload = function init() {
   let loadButton = document.getElementById("load");
   loadButton.addEventListener("change", loadProgress);
 
-  let isMoveCheckbox = document.getElementById("isMove");
-  isMoveCheckbox.addEventListener("change", (e) => {
-    isMove = e.target.checked;
+  let isMoveXCheckbox = document.getElementById("isMoveX");
+  isMoveXCheckbox.addEventListener("change", (e) => {
+    isMoveX = e.target.checked;
+  });
+  let isMoveYCheckbox = document.getElementById("isMoveY");
+  isMoveYCheckbox.addEventListener("change", (e) => {
+    isMoveY = e.target.checked;
   });
 
   var c = document.getElementById("clearButton");
@@ -167,38 +168,35 @@ window.onload = function init() {
   });
 
   canvas.addEventListener("mousedown", (event) => {
-    if (isMove) {
+    if (isMoveX || isMoveY) {
       moved = false;
       getPosition(event);
       checkPointExist(x, y);
     }
   });
   canvas.addEventListener("mousemove", () => {
-    if (isMove) {
+    if (isMoveX || isMoveY) {
       moved = true;
     }
   });
   canvas.addEventListener("mouseup", (event) => {
-    if (isMove && moved && movePointDetected) {
+    if ((isMoveX || isMoveY) && moved && movePointDetected) {
       getPosition(event);
       let array;
       if (tempIndex[2] === "L") array = linePoints;
       if (tempIndex[2] === "S") array = squarePoints;
       if (tempIndex[2] === "P") array = polygonPoints;
-      array[tempIndex[0]] = x;
-      array[tempIndex[1]] = y;
+      if (isMoveX) array[tempIndex[0]] = x;
+      if (isMoveY) array[tempIndex[1]] = y;
       render();
     }
   });
 
   canvas.addEventListener("click", function (event) {
-    if (!isMove) {
+    if (!isMoveX && !isMoveY) {
       if (shapeIndex == 0) {
         mouseClicked = false;
         getPosition(event);
-        var width = 0.2;
-        var val = parseFloat(document.getElementById("width").value);
-        if (val != "0") width = val;
         linePoints.push(x);
         linePoints.push(y);
         linePoints.push(x + width);
@@ -222,11 +220,6 @@ window.onload = function init() {
       } else if (shapeIndex == 2) {
         mouseClicked = false;
         getPosition(event);
-        var width = 0.2;
-        var val = parseFloat(document.getElementById("width").value);
-        if (val != "0") {
-          width = val;
-        }
         squarePoints.push(x);
         squarePoints.push(y);
 
@@ -247,10 +240,6 @@ window.onload = function init() {
         var numPolygon = parseFloat(
           document.getElementById("nodePolygon").value
         );
-        var width = 0.2;
-        var val = parseFloat(document.getElementById("width").value);
-        if (val != "0") width = val;
-
         //Making default polygon
         if (numPolygon == 0) {
           mouseClicked = false;
