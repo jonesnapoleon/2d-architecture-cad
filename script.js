@@ -260,7 +260,6 @@ window.onload = function init() {
           polygonColors.push(color);
           polygonColors.push(color);
           render();
-          // }
         }
       }
     }
