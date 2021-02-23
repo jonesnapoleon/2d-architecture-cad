@@ -30,7 +30,7 @@ var cBufferId = gl.createBuffer();
 
 const resizeCanvas = (gl) => {
   gl.canvas.width = (9 / 12) * window.innerWidth;
-  gl.canvas.height = (9 / 9) * window.innerHeight;
+  gl.canvas.height = (9 / 12) * window.innerWidth;
 };
 
 const getColor = (hex) => {
