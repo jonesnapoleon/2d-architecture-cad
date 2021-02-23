@@ -18,6 +18,7 @@ var isMoveX = false;
 var isMoveY = false;
 let movePointDetected = !true;
 var width = 0.5;
+var numPolygonDone = 0;
 
 canvas = document.getElementById("gl-canvas");
 gl = WebGLUtils.setupWebGL(canvas);
@@ -237,32 +238,29 @@ window.onload = function init() {
 
         render();
       } else if (shapeIndex == 3) {
+        mouseClicked = false;
         var numPolygon = parseFloat(
           document.getElementById("nodePolygon").value
         );
-        //Making default polygon
-        if (numPolygon == 0) {
-          mouseClicked = false;
+        if (numPolygonDone == numPolygon) {
+          numPolygonDone = 0;
+        }
 
-          x = (2 * event.clientX) / canvas.width - 1;
-          y = (2 * (canvas.height - event.clientY)) / canvas.height - 1;
+        if (numPolygonDone < numPolygon - 1) {
+          getPosition(event);
           polygonPoints.push(x);
           polygonPoints.push(y);
-
-          polygonPoints.push(x - width);
-          polygonPoints.push(y + width);
-
-          polygonPoints.push(x + width);
-          polygonPoints.push(y + 2 * width);
-
-          polygonPoints.push(x + 3 * width);
-          polygonPoints.push(y + width);
-
-          polygonPoints.push(x + 2 * width);
+          polygonColors.push(color);
+          polygonColors.push(color);
+          numPolygonDone++;
+        } else {
+          getPosition(event);
+          polygonPoints.push(x);
           polygonPoints.push(y);
-
+          polygonColors.push(color);
           polygonColors.push(color);
           render();
+          // }
         }
       }
     }
@@ -292,6 +290,7 @@ window.onload = function init() {
 };
 
 function render() {
+  var numPolygon = parseFloat(document.getElementById("nodePolygon").value);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
@@ -321,8 +320,9 @@ function render() {
   gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(polygonColors));
   if (polygonPoints.length != 0) {
-    for (var i = 0; i <= polygonPoints.length / 5; i++) {
-      gl.drawArrays(gl.POLYGON, 5 * i, 5);
+    for (var i = 0; i <= polygonPoints.length / numPolygon; i++) {
+      gl.drawArrays(gl.LINE_LOOP, numPolygon * i, numPolygon);
     }
+    numPolygonDone++;
   }
 }
