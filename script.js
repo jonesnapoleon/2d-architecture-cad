@@ -19,6 +19,9 @@ var isMoveY = false;
 let movePointDetected = !true;
 var width = 0.5;
 var numPolygonDone = 0;
+var arrayOfPolygonPoints = [];
+var arrayOfPolygonColors = [];
+var arrayOfNumPolygon = [];
 
 canvas = document.getElementById("gl-canvas");
 gl = WebGLUtils.setupWebGL(canvas);
@@ -165,6 +168,9 @@ window.onload = function init() {
     squareColors = [];
     polygonPoints = [];
     polygonColors = [];
+    arrayOfPolygonPoints = [];
+    arrayOfPolygonColors = [];
+    arrayOfNumPolygon = [];
     render();
   });
 
@@ -238,14 +244,15 @@ window.onload = function init() {
 
         render();
       } else if (shapeIndex == 3) {
-        mouseClicked = false;
+        // alert(numPolygonDone);
         var numPolygon = parseFloat(
           document.getElementById("nodePolygon").value
         );
-        if (numPolygonDone == numPolygon) {
-          numPolygonDone = 0;
-        }
+        mouseClicked = false;
 
+        // if (numPolygonDone == numPolygon) {
+        //   numPolygonDone = 0;
+        // }
         if (numPolygonDone < numPolygon - 1) {
           getPosition(event);
           polygonPoints.push(x);
@@ -254,12 +261,21 @@ window.onload = function init() {
           polygonColors.push(color);
           numPolygonDone++;
         } else {
+          numPolygon = parseFloat(document.getElementById("nodePolygon").value);
           getPosition(event);
           polygonPoints.push(x);
           polygonPoints.push(y);
           polygonColors.push(color);
           polygonColors.push(color);
+          arrayOfPolygonPoints.push(polygonPoints);
+          arrayOfPolygonColors.push(polygonColors);
+          arrayOfNumPolygon.push(numPolygon);
+          polygonPoints = [];
+          polygonColors = [];
+          // alert(arrayOfPolygonPoints);
           render();
+          numPolygonDone = 0;
+
           // }
         }
       }
@@ -290,7 +306,6 @@ window.onload = function init() {
 };
 
 function render() {
-  var numPolygon = parseFloat(document.getElementById("nodePolygon").value);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
@@ -313,16 +328,27 @@ function render() {
       gl.drawArrays(gl.LINE_LOOP, 4 * i, 4);
     }
   }
+  for (var j = 0; j < arrayOfPolygonPoints.length; j++) {
+    console.log(arrayOfPolygonPoints[j]);
+    console.log(arrayOfNumPolygon[j]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(arrayOfPolygonPoints[j]));
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(polygonPoints));
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(polygonColors));
-  if (polygonPoints.length != 0) {
-    for (var i = 0; i <= polygonPoints.length / numPolygon; i++) {
-      gl.drawArrays(gl.LINE_LOOP, numPolygon * i, numPolygon);
+    gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(arrayOfPolygonColors[j]));
+    if (arrayOfPolygonPoints[j].length != 0) {
+      for (
+        var i = 0;
+        i <= arrayOfPolygonPoints[j].length / arrayOfNumPolygon[j];
+        i++
+      ) {
+        gl.drawArrays(
+          gl.LINE_LOOP,
+          arrayOfNumPolygon[j] * i,
+          arrayOfNumPolygon[j]
+        );
+      }
+      numPolygonDone++;
     }
-    numPolygonDone++;
   }
 }
