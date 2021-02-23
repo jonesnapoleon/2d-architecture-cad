@@ -21,3 +21,6 @@ select {
 .form-label {
   margin-bottom: 0.2rem;
 }
+.modal {
+  text-align: center;
+}

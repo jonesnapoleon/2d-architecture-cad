@@ -9,6 +9,18 @@
       integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
       crossorigin="anonymous"
     />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+      integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+      crossorigin="anonymous"
+    ></script>
     <link href="./main.css" rel="stylesheet" />
   </head>
   <body>
@@ -21,69 +33,103 @@
         precision mediump float; varying vec4 fColor; void main() { gl_FragColor = fColor; }
       </script>
 
-      <body class="row">
-        <div class="col-9">
-          <canvas id="gl-canvas">
-            Oops ... your browser doesn't support the HTML5 canvas element
-          </canvas>
+      <body>
+        <div
+          id="myModal"
+          class="modal fade modal-xl"
+          aria-hidden="true"
+          role="dialog"
+        >
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">How to use</h5>
+                <button
+                  type="button"
+                  class="close btn-close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">Ai ni</div>
+            </div>
+          </div>
         </div>
-        <div class="col-3 help-bar">
-          <div>
-            <label class="form-label">Load file</label>
-            <input
-              class="form-control form-control-sm"
-              type="file"
-              id="load"
-              accept=".json,application/json"
-            />
+        <div class="row">
+          <div class="col-9">
+            <canvas id="gl-canvas">
+              Oops ... your browser doesn't support the HTML5 canvas element
+            </canvas>
           </div>
-          <div class="mb-4">
-            <button id="save" class="btn btn-primary">Save progress</button>
-          </div>
-          <div>
-            <label class="form-label">Choose color</label>
-            <input type="color" class="form-control" id="color-picker" />
-          </div>
-          <div>
-            <label class="form-label">Item shape</label>
-            <select
-              id="menushape"
-              class="form-select form-select-sm"
-              aria-label="Default select example"
-            >
-              <option value="0">Line (Default)</option>
-              <option value="1">Line (by Cursor)</option>
-              <option value="2">Square</option>
-              <option value="3">Polygon</option>
-            </select>
-          </div>
-          <div>
-            <label class="form-label">Number of Node Polygon</label>
-            <input
-              type="number"
-              id="nodePolygon"
-              placeholder="node polygon"
-              value="0"
-              class="form-control form-control-sm"
-            />
-          </div>
-          <div>
-            <label class="form-label">Shape Width</label>
-            <input type="range" class="form-range" id="width" />
-          </div>
+          <div class="col-3 help-bar">
+            <div>
+              <label class="form-label">Load file</label>
+              <input
+                class="form-control form-control-sm"
+                type="file"
+                id="load"
+                accept=".json,application/json"
+              />
+            </div>
+            <div>
+              <button id="save" class="btn btn-primary">Save progress</button>
+            </div>
+            <div class="mb-4">
+              <button
+                id="save"
+                class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#myModal"
+              >
+                Help
+              </button>
+            </div>
 
-          <div>
-            <input class="form-check-input" type="checkbox" id="isMoveX" />
-            <label class="form-check-label">Move at X direction</label>
-          </div>
-          <div>
-            <input class="form-check-input" type="checkbox" id="isMoveY" />
-            <label class="form-check-label">Move at Y direction</label>
-          </div>
-          <div class="mt-3">
-            <button id="clearButton" class="btn btn-danger">
-              Clear canvas
-            </button>
+            <div>
+              <label class="form-label">Choose color</label>
+              <input type="color" class="form-control" id="color-picker" />
+            </div>
+            <div>
+              <label class="form-label">Item shape</label>
+              <select
+                id="menushape"
+                class="form-select form-select-sm"
+                aria-label="Default select example"
+              >
+                <option value="0">Line (Default)</option>
+                <option value="1">Line (by Cursor)</option>
+                <option value="2">Square</option>
+                <option value="3">Polygon</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Number of Node Polygon</label>
+              <input
+                type="number"
+                id="nodePolygon"
+                placeholder="node polygon"
+                value="0"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div>
+              <label class="form-label">Shape Width</label>
+              <input type="range" class="form-range" id="width" />
+            </div>
+
+            <div>
+              <input class="form-check-input" type="checkbox" id="isMoveX" />
+              <label class="form-check-label">Move at X direction</label>
+            </div>
+            <div>
+              <input class="form-check-input" type="checkbox" id="isMoveY" />
+              <label class="form-check-label">Move at Y direction</label>
+            </div>
+            <div class="mt-3">
+              <button id="clearButton" class="btn btn-danger">
+                Clear canvas
+              </button>
+            </div>
           </div>
         </div>
       </body>
