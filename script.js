@@ -351,14 +351,9 @@ function render() {
       // for (var i = 0; i < arrayOfSquarePoints[j].length / 4 - 1; i++) {
       //   gl.drawArrays(gl.LINE_LOOP, 4 * i, 4);
       // }
-      
-      // for (var i = 0; i < arrayOfSquarePoints[j].length / 4 - 1; i++) {
-      console.log(arrayOfSquarePoints[j]);
       gl.drawArrays(gl.TRIANGLES, m, 4);
       gl.drawArrays(gl.TRIANGLES, m + 1, 4);
       m = m + 4;
-      // gl.drawArrays(gl.TRIANGLES, i + 1, 4);
-      // }
     }
   }
 
