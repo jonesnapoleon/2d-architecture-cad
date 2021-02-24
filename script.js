@@ -23,6 +23,12 @@ var arrayOfPolygonPoints = [];
 var arrayOfPolygonColors = [];
 var arrayOfNumPolygon = [];
 
+var arrayOfSquarePoints = [];
+var arrayOfSquareColors = [];
+
+var arrayOfLinePoints = [];
+var arrayOfLineColors = [];
+
 canvas = document.getElementById("gl-canvas");
 gl = WebGLUtils.setupWebGL(canvas);
 var bufferId = gl.createBuffer();
@@ -255,6 +261,9 @@ window.onload = function init() {
         squareColors.push(color);
         squareColors.push(color);
 
+        arrayOfSquarePoints.push(squarePoints);
+        arrayOfSquareColors.push(squareColors);
+
         render();
       } else if (shapeIndex == 3) {
         // alert(numPolygonDone);
@@ -327,20 +336,23 @@ function render() {
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(lineColors));
 
   if (linePoints.length != 0) {
-    for (var i = 0; i <= linePoints.length / 2; i++) {
+    for (var i = 0; i < linePoints.length / 2 - 1; i++) {
       gl.drawArrays(gl.LINES, 2 * i, 2);
     }
   }
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(squarePoints));
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(squareColors));
-  if (squarePoints.length != 0) {
-    for (var i = 0; i <= squarePoints.length / 4; i++) {
-      gl.drawArrays(gl.LINE_LOOP, 4 * i, 4);
+  for (var j = 0; j < arrayOfSquarePoints.length; j++) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(arrayOfSquarePoints[j]));
+    gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(arrayOfSquareColors[j]));
+    if (arrayOfSquarePoints[j].length != 0) {
+      for (var i = 0; i < arrayOfSquarePoints[j].length / 4 - 1; i++) {
+        gl.drawArrays(gl.LINE_LOOP, 4 * i, 4);
+      }
     }
   }
+
   for (var j = 0; j < arrayOfPolygonPoints.length; j++) {
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(arrayOfPolygonPoints[j]));
@@ -350,7 +362,7 @@ function render() {
     if (arrayOfPolygonPoints[j].length != 0) {
       for (
         var i = 0;
-        i <= arrayOfPolygonPoints[j].length / arrayOfNumPolygon[j];
+        i < arrayOfPolygonPoints[j].length / arrayOfNumPolygon[j] - 1;
         i++
       ) {
         gl.drawArrays(
