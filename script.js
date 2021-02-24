@@ -70,7 +70,7 @@ const getIndex = (index) => {
   return "";
 };
 const checkPointExist = (x = x, y = y) => {
-  let temp = [linePoints, squarePoints, polygonPoints];
+  let temp = [linePoints, squarePoints];
   for (let index in temp) {
     for (let i = 0; i < temp[index].length; i += 2) {
       const oneX = temp[index][i];
@@ -79,6 +79,17 @@ const checkPointExist = (x = x, y = y) => {
         movePointDetected = true;
         tempMove = [x, y];
         tempIndex = [i, i + 1, getIndex(parseInt(index))];
+      }
+    }
+  }
+  for (let index in arrayOfPolygonPoints) {
+    for (let i = 0; i < arrayOfPolygonPoints[index].length; i += 2) {
+      const oneX = arrayOfPolygonPoints[index][i];
+      const oneY = arrayOfPolygonPoints[index][i + 1];
+      if (isCoordinateChoosen(oneX, oneY, x, y)) {
+        movePointDetected = true;
+        tempMove = [x, y];
+        tempIndex = [i, i + 1, "P", index];
       }
     }
   }
@@ -106,8 +117,8 @@ const saveProgress = () => {
     lineColors,
     squareColors,
     squarePoints,
-    polygonPoints,
-    polygonColors,
+    arrayOfPolygonPoints,
+    arrayOfPolygonColors,
   };
   downloadToFile(JSON.stringify(data));
 };
@@ -122,8 +133,8 @@ const loadProgress = (e) => {
     squareColors = data.squareColors;
     linePoints = data.linePoints;
     squarePoints = data.squarePoints;
-    polygonPoints = data.polygonPoints;
-    polygonColors = data.polygonColors;
+    arrayOfPolygonPoints = data.arrayOfPolygonPoints;
+    arrayOfPolygonColors = data.arrayOfPolygonColors;
     render();
   });
   reader.readAsBinaryString(file);
@@ -192,7 +203,7 @@ window.onload = function init() {
       let array;
       if (tempIndex[2] === "L") array = linePoints;
       if (tempIndex[2] === "S") array = squarePoints;
-      if (tempIndex[2] === "P") array = polygonPoints;
+      if (tempIndex[2] === "P") array = arrayOfPolygonPoints[tempIndex[3]];
       if (isMoveX) array[tempIndex[0]] = x;
       if (isMoveY) array[tempIndex[1]] = y;
       render();
@@ -329,8 +340,6 @@ function render() {
     }
   }
   for (var j = 0; j < arrayOfPolygonPoints.length; j++) {
-    console.log(arrayOfPolygonPoints[j]);
-    console.log(arrayOfNumPolygon[j]);
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(arrayOfPolygonPoints[j]));
 
