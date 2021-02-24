@@ -123,8 +123,11 @@ const saveProgress = () => {
     lineColors,
     squareColors,
     squarePoints,
+    arrayOfSquareColors,
+    arrayOfSquarePoints,
     arrayOfPolygonPoints,
     arrayOfPolygonColors,
+    arrayOfNumPolygon,
   };
   downloadToFile(JSON.stringify(data));
 };
@@ -141,6 +144,9 @@ const loadProgress = (e) => {
     squarePoints = data.squarePoints;
     arrayOfPolygonPoints = data.arrayOfPolygonPoints;
     arrayOfPolygonColors = data.arrayOfPolygonColors;
+    arrayOfNumPolygon = data.arrayOfNumPolygon;
+    arrayOfSquareColors = data.arrayOfSquareColors;
+    arrayOfSquarePoints = data.arrayOfSquarePoints;
     render();
   });
   reader.readAsBinaryString(file);
