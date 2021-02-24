@@ -171,6 +171,7 @@ window.onload = function init() {
     arrayOfPolygonPoints = [];
     arrayOfPolygonColors = [];
     arrayOfNumPolygon = [];
+    numPolygonDone = 0;
     render();
   });
 
