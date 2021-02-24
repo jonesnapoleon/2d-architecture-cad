@@ -173,17 +173,18 @@ window.onload = function init() {
 
   var c = document.getElementById("clearButton");
   c.addEventListener("click", function () {
-    linePoints = [];
-    lineColors = [];
-    squarePoints = [];
-    squareColors = [];
-    polygonPoints = [];
-    polygonColors = [];
-    arrayOfPolygonPoints = [];
-    arrayOfPolygonColors = [];
-    arrayOfNumPolygon = [];
-    numPolygonDone = 0;
-    render();
+    // linePoints = [];
+    // lineColors = [];
+    // squarePoints = [];
+    // squareColors = [];
+    // polygonPoints = [];
+    // polygonColors = [];
+    // arrayOfPolygonPoints = [];
+    // arrayOfPolygonColors = [];
+    // arrayOfNumPolygon = [];
+    // numPolygonDone = 0;
+    // render();
+    location.reload();
   });
 
   canvas.addEventListener("mousedown", (event) => {
